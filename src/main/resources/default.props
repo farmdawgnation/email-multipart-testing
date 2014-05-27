@@ -1,2 +1,10 @@
-mail.from=bacon@bacon.com
-mail.smtp.host=localhost
+mail.debug=true
+mail.auth.debug=true
+mail.from=hello@anchortab.com
+mail.smtp.host=smtp.mandrillapp.com
+mail.smtp.port=587
+mail.smtp.starttls.enable=true
+mail.smtp.auth=true
+
+username=USERNAMEHERE
+password=PASSWORDHERE
