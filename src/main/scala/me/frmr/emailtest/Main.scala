@@ -1,9 +1,17 @@
 package me.frmr.emailtest
 
+import net.liftweb.common._
 import net.liftweb.util._
   import Mailer._
 
 import scala.io._
+
+import javax.mail._
+
+object PasswordAuthenticator extends Authenticator {
+  override def getPasswordAuthentication =
+    new PasswordAuthentication(Props.get("username").openOr(""), Props.get("password").openOr(""))
+}
 
 object Main extends App {
   println("Lift Framework email test.")
@@ -12,10 +20,12 @@ object Main extends App {
 
   val from = From(Props.get("mail.from").openOr("bacon@bacon.com"))
 
+  Mailer.authenticator = Full(PasswordAuthenticator)
+
   // Construct an email with both embedded images and PDF attachments.
   val emailNodeSeq = <html>
     <h1>This is a test email.</h1>
-    <img src="bacon.png" /><br /><br />
+    <img src="cid:bacon.png" /><br /><br />
     There is also an embedded pdf. Enjoy.
   </html>
 
@@ -27,5 +37,5 @@ object Main extends App {
 
   val emailPart = XHTMLPlusImages(emailNodeSeq, pngAttachment, pdfAttachment)
 
-  blockingSendMail(from, Subject("test email from lift"), To(email), emailPart)
+  blockingSendMail(from, Subject("test email from lift"), To(email, Full("Test user")), emailPart)
 }
